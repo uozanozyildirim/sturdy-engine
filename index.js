@@ -22,6 +22,32 @@ app.post("/addtask", function(req, res) {
     res.redirect("/");
 });
 
+app.use(express.static("public"));
+
+
+const { MongoClient } = require("mongodb");
+// Replace the uri string with your connection string.
+const uri =
+  "mongodb+srv://uozanozyildirim:lfI6lEf55sUd127P@to-do-database.ky4ux0b.mongodb.net/?retryWrites=true&w=majority";
+const client = new MongoClient(uri);
+async function run() {
+  try {
+    const database = client.db('sample_mflix');
+    const movies = database.collection('movies');
+    // Query for a movie that has the title 'Back to the Future'
+    const query = { title: 'Back to the Future' };
+    const movie = await movies.findOne(query);
+    console.log(movie);
+  } finally {
+    // Ensures that the client will close when you finish/error
+    await client.close();
+  }
+}
+run().catch(console.dir);
+
+
+
+
 app.post("/removetask", function(req, res) {
     var completeTask = req.body.check;
     //check for the "typeof" the different completed task, then add into the complete task
