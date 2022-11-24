@@ -17,15 +17,23 @@ var complete = ["finish jquery"];
 //post route for adding new task 
 app.post("/addtask", function(req, res) {
     var newTask = req.body.newtask;
+    if(newTask === '' || null)
+    {
+      console.log('Input Is null, record is not saved');
+    }
+    else {
+      task.push(newTask);
+      res.redirect("/");
+    }
     //add the new task from the post route
-    task.push(newTask);
-    res.redirect("/");
+    
 });
 
 app.use(express.static("public"));
 
 
 const { MongoClient } = require("mongodb");
+const { empty } = require("statuses");
 // Replace the uri string with your connection string.
 const uri =
   "mongodb+srv://uozanozyildirim:lfI6lEf55sUd127P@to-do-database.ky4ux0b.mongodb.net/?retryWrites=true&w=majority";
