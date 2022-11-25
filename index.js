@@ -16,12 +16,19 @@ var complete = ["finish jquery"];
 
 //post route for adding new task 
 app.post("/addtask", function(req, res) {
+  
     var newTask = req.body.newtask;
     if(newTask === '' || null)
     {
       console.log('Input Is null, record is not saved');
     }
     else {
+      db.tasks.insertOne(
+          {
+              task = task
+          }
+
+      )
       task.push(newTask);
       res.redirect("/");
     }
