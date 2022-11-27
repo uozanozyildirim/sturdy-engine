@@ -23,16 +23,9 @@ app.post("/addtask", function(req, res) {
       console.log('Input Is null, record is not saved');
     }
     else {
-      db.tasks.insertOne(
-          {
-              task = task
-          }
-
-      )
       task.push(newTask);
       res.redirect("/");
     }
-    //add the new task from the post route
     
 });
 
