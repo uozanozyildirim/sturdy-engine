@@ -2,35 +2,8 @@
 var express = require("express");
 var bodyParser = require("body-parser");
 var app = express();
-
-app.use(bodyParser.urlencoded({ extended: true }));
-app.set("view engine", "ejs");
-//render css files
-
-app.use(express.static("public"));
-
-//placeholders for added task
 var task = ["buy socks", "practise with nodejs"];
-//placeholders for removed task
 var complete = ["finish jquery"];
-
-//post route for adding new task 
-app.post("/addtask", function(req, res) {
-  
-    var newTask = req.body.newtask;
-    if(newTask === '' || null)
-    {
-      console.log('Input Is null, record is not saved');
-    }
-    else {
-      task.push(newTask);
-      res.redirect("/");
-    }
-    
-});
-
-app.use(express.static("public"));
-
 
 const { MongoClient } = require("mongodb");
 const { empty } = require("statuses");
@@ -55,6 +28,28 @@ run().catch(console.dir);
 
 
 
+app.use(bodyParser.urlencoded({ extended: true }));
+app.set("view engine", "ejs");
+//render css files
+
+app.use(express.static("public"));
+
+
+
+//post route for adding new task 
+app.post("/addtask", function(req, res) {
+  
+    var newTask = req.body.newtask;
+    if(newTask === '' || null)
+    {
+      console.log('Input Is null, record is not saved');
+    }
+    else {
+      task.push(newTask);
+      res.redirect("/");
+    }
+    
+});
 
 app.post("/removetask", function(req, res) {
     var completeTask = req.body.check;
