@@ -11,22 +11,21 @@ const { empty } = require("statuses");
 const uri =
   "mongodb+srv://uozanozyildirim:lfI6lEf55sUd127P@to-do-database.ky4ux0b.mongodb.net/?retryWrites=true&w=majority";
 const client = new MongoClient(uri);
+const database = client.db('tasks');
+const data = database.collection('data')
+// Query for a movie that has the title 'Back to the Future'
+const query = { age: '24' };
+
 async function run() {
   try {
-    const database = client.db('sample_mflix');
-    const movies = database.collection('movies');
-    // Query for a movie that has the title 'Back to the Future'
-    const query = { title: 'Back to the Future' };
-    const movie = await movies.findOne(query);
-    console.log(movie);
+    // const movie = await movies.findOne(query);
+    //  console.log(movie);
   } finally {
     // Ensures that the client will close when you finish/error
     await client.close();
   }
 }
 run().catch(console.dir);
-
-
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
@@ -36,20 +35,57 @@ app.use(express.static("public"));
 
 
 
+ MongoClient.connect(
+  uri,
+  { useNewUrlParser: true },
+  (error, client) => {
+    if (error) {
+       return console.log('unable to connect to database');
+    }
+
+    const db = client.db('tasks');
+
+     const taskData = db.collection('data').findOne({ age: '24' })
+     console.log(taskData)
+  }
+);
+
+
 //post route for adding new task 
 app.post("/addtask", function(req, res) {
   
     var newTask = req.body.newtask;
-    if(newTask === '' || null)
-    {
-      console.log('Input Is null, record is not saved');
-    }
-    else {
+
+    try {
+
       task.push(newTask);
+      newTask = JSON.stringify(newTask)
+    
+      MongoClient.connect(
+        uri,
+        { useNewUrlParser: true },
+        (error, client) => {
+          if (error) {
+            return console.log('unable to connect to database');
+          }
+      
+          const db = client.db('tasks');
+      
+          db.collection('data').insertOne({
+            name: newTask
+          });
+        }
+      );
+
+      console.log(newTask);
       res.redirect("/");
     }
-    
-});
+    catch(error) {
+      console.log(error)
+    }
+
+}
+  );
 
 app.post("/removetask", function(req, res) {
     var completeTask = req.body.check;
@@ -69,10 +105,12 @@ app.post("/removetask", function(req, res) {
 
 //render the ejs and display added task, completed task
 app.get("/", function(req, res) {
-    res.render("index", { task: task, complete: complete });
-});
+
+  res.render("index", { task: task, complete: complete });
+
+})
 
 //set app to listen on port 3000
 app.listen(3000, function() {
-    console.log("server is running on port 3000");
+    console.log("Server Is Started On Port 3000");
 });
