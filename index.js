@@ -35,21 +35,6 @@ app.use(express.static("public"));
 
 
 
- MongoClient.connect(
-  uri,
-  { useNewUrlParser: true },
-  (error, client) => {
-    if (error) {
-       return console.log('unable to connect to database');
-    }
-
-    const db = client.db('tasks');
-
-     const taskData = db.collection('data').findOne({ age: '24' })
-     console.log(taskData)
-  }
-);
-
 
 //post route for adding new task 
 app.post("/addtask", function(req, res) {
@@ -105,6 +90,38 @@ app.post("/removetask", function(req, res) {
 
 //render the ejs and display added task, completed task
 app.get("/", function(req, res) {
+
+
+  try {
+
+    MongoClient.connect(
+      uri,
+      { useNewUrlParser: true },
+      (error, client) => {
+        if (error) {
+           return console.log('unable to connect to database');
+        }
+        
+        var tmp;
+        const db = client.db('tasks');
+    
+        const result = client.db("tasks").collection("data").findOne({ name: "umut ozan ozyildirim" });
+
+        if (result) {
+            console.log('Found a listing in the collection with the name');
+            console.log(result);
+        } else {
+            console.log('No listings found with the name');
+        }
+
+      })
+  
+  }
+
+  catch (error) {
+    console.log(error)
+  }
+
 
   res.render("index", { task: task, complete: complete });
 
